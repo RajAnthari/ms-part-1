@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: "configserver"
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: "https://github.com/RajAnthari/config-ms.git" 
+          default-label: main
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+        #native:
+          #search-locations: "classpath:/config"
+          #search-locations: "file:///F://config-ms"
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
+
+server:
+  port: 8071
+  
+encrypt:
+  key: "1bb9320b4031ef0f2c955d4aa471df50031d1edf5a7f88a961edc5cabd91edb4"
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
