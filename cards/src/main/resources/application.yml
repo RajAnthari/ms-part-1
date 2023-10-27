@@ -31,8 +31,16 @@ management:
   endpoint:
     shutdown:
       enabled: true
+    health:
+      probes:
+        enabled: true
   info:
     env:
+      enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
       enabled: true
 
 endpoints:
@@ -54,3 +62,8 @@ info:
     description: "Bank Cards application"
     version: "1.0.0"
     
+logging:
+  level:
+    com:
+      rajeshanthari:
+        ms: DEBUG
