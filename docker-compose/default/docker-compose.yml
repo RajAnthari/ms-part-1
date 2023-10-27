@@ -1,4 +1,16 @@
 services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      timeout: 10s
+      retries: 10
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   rabbit:
     image: rabbitmq:3.12-management
     hostname: rabbitmq
@@ -15,7 +27,7 @@ services:
       file: common-config.yml
       service: network-deploy-service
   eurekaserver:
-    image: "rajeshanthari/eurekaserver:s9"
+    image: "rajeshanthari/eurekaserver:s10"
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
@@ -66,7 +78,7 @@ services:
       MYSQL_DATABASE: cardsdb
 
   configserver:
-    image: "rajeshanthari/configserver:s9"
+    image: "rajeshanthari/configserver:s10"
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -81,7 +93,7 @@ services:
       start_period: 5s
 
   accounts:
-    image: "rajeshanthari/accounts:s9"
+    image: "rajeshanthari/accounts:s10"
     container_name: accounts-ms
     ports:
       - "8080:8080"
@@ -101,7 +113,7 @@ services:
       accountsdb:
         condition: service_healthy
   loans:
-    image: "rajeshanthari/loans:s9"
+    image: "rajeshanthari/loans:s10"
     container_name: loans-ms
     ports:
       - "8090:8090"
@@ -121,7 +133,7 @@ services:
       loansdb:
         condition: service_healthy
   cards:
-    image: "rajeshanthari/cards:s9"
+    image: "rajeshanthari/cards:s10"
     container_name: cards-ms
     ports:
       - "9000:9000"
@@ -141,12 +153,17 @@ services:
       cardsdb:
         condition: service_healthy
   gatewayserver:
-    image: "rajeshanthari/gatewayserver:s9"
+    image: "rajeshanthari/gatewayserver:s10"
     container_name: gatewayserver-ms
     ports:
       - "8072:8072"
     environment: 
       SPRING_APPLICATION_NAME: "gatewayserver"
+      SPRING_DATA_REDIS_CONNECT_TIMEOUT: 2s
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_TIMEOUT: 1s
+      
     extends:
       file: common-config.yml
       service: microservice-eureka-config
@@ -157,6 +174,9 @@ services:
         condition: service_healthy
       cards:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    
 networks:
   rajeshanthari:
     driver: "bridge"

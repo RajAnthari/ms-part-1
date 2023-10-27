@@ -1,27 +1,19 @@
 package com.rajeshanthari.ms.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Random;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.rajeshanthari.ms.constants.AccountsConstants;
 import com.rajeshanthari.ms.domain.Accounts;
 import com.rajeshanthari.ms.domain.Customer;
 import com.rajeshanthari.ms.dto.AccountsDto;
 import com.rajeshanthari.ms.dto.CardsDto;
 import com.rajeshanthari.ms.dto.CustomerDetailsDto;
-import com.rajeshanthari.ms.dto.CustomerDto;
 import com.rajeshanthari.ms.dto.LoansDto;
-import com.rajeshanthari.ms.exception.CustomerAlreadyExistsException;
 import com.rajeshanthari.ms.exception.ResourceNotFoundException;
 import com.rajeshanthari.ms.mapper.AccountsMapper;
 import com.rajeshanthari.ms.mapper.CustomerMapper;
 import com.rajeshanthari.ms.repository.AccountsRepository;
 import com.rajeshanthari.ms.repository.CustomerRepository;
-import com.rajeshanthari.ms.service.IAccountsService;
 import com.rajeshanthari.ms.service.ICustomerService;
 import com.rajeshanthari.ms.service.client.CardsFeignClient;
 import com.rajeshanthari.ms.service.client.LoansFeignClient;
@@ -48,10 +40,14 @@ public class CustomerServiceImpl implements ICustomerService {
 		customerDetailsDto.setAccountsDto(AccountsMapper.mapToAccountsDto(account, new AccountsDto()));
 
 		ResponseEntity<CardsDto> cardDtoResponseEntity = cardsFeignClient.fetchCardDetails(correlationId, mobileNumber);
-		customerDetailsDto.setCardsDto(cardDtoResponseEntity.getBody());
+		if (cardDtoResponseEntity != null) {
+			customerDetailsDto.setCardsDto(cardDtoResponseEntity.getBody());
+		}
 
 		ResponseEntity<LoansDto> loanDtoResponseEntity = loansFeignClient.fetchLoanDetails(correlationId, mobileNumber);
-		customerDetailsDto.setLoansDto(loanDtoResponseEntity.getBody());
+		if (loanDtoResponseEntity != null) {
+			customerDetailsDto.setLoansDto(loanDtoResponseEntity.getBody());
+		}
 
 		return customerDetailsDto;
 	}
