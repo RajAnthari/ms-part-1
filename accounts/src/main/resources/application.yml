@@ -25,7 +25,9 @@ spring:
       openfeign:
          circuitbreaker:
             enabled: true
-
+   metrics:
+      tags:
+         application: ${spring.application.name}
 management:
    endpoints:
       web:
@@ -66,6 +68,8 @@ info:
       version: 1.0.0
 
 logging:
+   pattern:
+      level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
    level:
       com:
          rajeshanthari:

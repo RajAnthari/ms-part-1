@@ -20,6 +20,9 @@ spring:
     port: 5672
     username: "guest"
     password: "guest"
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 server:
   port: 8071
@@ -41,3 +44,7 @@ management:
     health:
       probes:
         enabled: true
+        
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

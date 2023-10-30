@@ -3,6 +3,9 @@ spring:
     name: "eurekaserver"
   config:
     import: "optional:configserver:http://localhost:8071/"
+  metrics:
+    tags:
+      application: ${spring.application.name}
     
 management:
   endpoints:
@@ -18,3 +21,7 @@ management:
     health:
       probes:
         enabled: true
+        
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

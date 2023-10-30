@@ -14,7 +14,7 @@ spring:
     gateway:
       httpclient:
         connect-timeout: 1000
-        response-timeout: 2s
+        response-timeout: 10s
       discovery:
         locator: 
           enabled: false
@@ -25,6 +25,14 @@ spring:
       host: localhost
       port: 6379
       timeout: 1s
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "http://localhost:7080/realms/master/protocol/openid-connect/certs"
 
 management:
   endpoints:
@@ -45,6 +53,8 @@ info:
     version: "1.0.0"
     
 logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
   level:
     com:
       rajeshanthari:

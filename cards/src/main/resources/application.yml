@@ -22,6 +22,9 @@ spring:
       port: 5672
       username: guest
       password: guest
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 management:
   endpoints:
@@ -63,6 +66,8 @@ info:
     version: "1.0.0"
     
 logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
   level:
     com:
       rajeshanthari:
