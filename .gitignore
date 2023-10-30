@@ -1,0 +1,8 @@
+/.metadata/
+
+# Maven
+target/
+dist/
+
+# Data
+.data/
