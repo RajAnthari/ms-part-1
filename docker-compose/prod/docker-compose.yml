@@ -239,7 +239,7 @@ services:
       file: common-config.yml
       service: network-deploy-service
   eurekaserver:
-    image: "rajeshanthari/eurekaserver:s11"
+    image: "rajeshanthari/eurekaserver:s13"
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
@@ -291,7 +291,7 @@ services:
       MYSQL_DATABASE: cardsdb
 
   configserver:
-    image: "rajeshanthari/configserver:s11"
+    image: "rajeshanthari/configserver:s13"
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -309,7 +309,7 @@ services:
 
 
   accounts:
-    image: "rajeshanthari/accounts:s11"
+    image: "rajeshanthari/accounts:s13"
     container_name: accounts-ms
     ports:
       - "8080:8080"
@@ -317,6 +317,7 @@ services:
       SPRING_APPLICATION_NAME: "accounts"
       SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb"
       OTEL_SERVICE_NAME: "accounts"
+      SPRING_RABBITMQ_HOST: "rabbit"
     extends:
       file: common-config.yml
       service: microservice-eureka-config
@@ -329,8 +330,10 @@ services:
     depends_on: 
       accountsdb:
         condition: service_healthy
+      rabbit:
+        condition: service_healthy
   loans:
-    image: "rajeshanthari/loans:s11"
+    image: "rajeshanthari/loans:s13"
     container_name: loans-ms
     ports:
       - "8090:8090"
@@ -351,7 +354,7 @@ services:
       loansdb:
         condition: service_healthy
   cards:
-    image: "rajeshanthari/cards:s11"
+    image: "rajeshanthari/cards:s13"
     container_name: cards-ms
     ports:
       - "9000:9000"
@@ -371,8 +374,19 @@ services:
     depends_on: 
       cardsdb:
         condition: service_healthy
+  message:
+    image: "rajeshanthari/message:s13"
+    container_name: message-ms
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
   gatewayserver:
-    image: "rajeshanthari/gatewayserver:s11"
+    image: "rajeshanthari/gatewayserver:s13"
     container_name: gatewayserver-ms
     ports:
       - "8072:8072"
