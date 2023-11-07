@@ -23,12 +23,6 @@ spring:
          mode: always
    config:
       import: optional:configserver:http://localhost:8071/
-   rabbitmq:
-      host: localhost
-      port: 5672
-      username: guest
-      password: guest
-      connection-timeout: 10s
    cloud:
       openfeign:
          circuitbreaker:
@@ -42,6 +36,10 @@ spring:
                group: ${spring.application.name}
             sendCommunication-out-0:
                destination: send-communication
+         kafka:
+            binder:
+               brokers:
+                  - localhost:9092
             
    metrics:
       tags:
